@@ -12,8 +12,7 @@ export function fechaLarga(id: string): string {
 }
 
 export function titulo(r: Resumen): string {
-  const h1 = r.body?.match(/^#\s+(.+)$/m)?.[1];
-  return r.data.title ?? h1?.replace(/[*_`]/g, '').trim() ?? `Resumen del ${fechaLarga(r.id)}`;
+  return r.data.titular;
 }
 
 // Más recientes primero.

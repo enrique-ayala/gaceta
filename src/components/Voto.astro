@@ -1,0 +1,44 @@
+---
+interface Props {
+  titulo: string; explicacion: string; resultado: 'aprobado' | 'rechazado';
+  a_favor?: number; en_contra?: number; abstenciones?: number; despues?: string;
+}
+const { titulo, explicacion, resultado, a_favor, en_contra, abstenciones, despues } = Astro.props;
+const hayVotos = a_favor !== undefined && en_contra !== undefined && a_favor + en_contra > 0;
+const pct = hayVotos ? Math.round((a_favor! / (a_favor! + en_contra!)) * 100) : 0;
+---
+<li class="voto">
+  <div class="cab">
+    <strong>{titulo}</strong>
+    <span class={`sello ${resultado}`}>{resultado === 'aprobado' ? '✓ Aprobado' : '✕ Rechazado'}</span>
+  </div>
+  <p>{explicacion}</p>
+  {hayVotos && (
+    <div class="barra-wrap">
+      <div class="barra" role="img" aria-label={`${a_favor} a favor y ${en_contra} en contra`}>
+        <span class="si" style={`width:${pct}%`}></span>
+      </div>
+      <div class="nums">
+        <span>👍 {a_favor} a favor</span>
+        <span>👎 {en_contra} en contra</span>
+        {abstenciones ? <span>{abstenciones} abstenciones</span> : null}
+      </div>
+    </div>
+  )}
+  {!hayVotos && a_favor !== undefined && <p class="nums"><span>👍 {a_favor} a favor (no se informó cuántos en contra)</span></p>}
+  {!hayVotos && a_favor === undefined && <p class="nums"><span>No se informó cuántos votos hubo.</span></p>}
+  {despues && <p class="despues">➜ {despues}</p>}
+</li>
+<style>
+  .voto { list-style: none; padding: .9rem 0; border-top: 1px solid var(--line); }
+  .voto:first-child { border-top: 0; }
+  .voto p { margin: .3rem 0; }
+  .cab { display: flex; justify-content: space-between; gap: .75rem; align-items: baseline; flex-wrap: wrap; }
+  .sello { font-size: .8rem; font-weight: 700; padding: .1rem .5rem; border-radius: 999px; white-space: nowrap; }
+  .sello.aprobado { background: var(--ok-bg); color: var(--ok-fg); }
+  .sello.rechazado { background: var(--no-bg); color: var(--no-fg); }
+  .barra { height: .6rem; border-radius: 999px; background: var(--no-bar); overflow: hidden; }
+  .barra .si { display: block; height: 100%; background: var(--ok-bar); }
+  .nums { display: flex; gap: 1rem; flex-wrap: wrap; font-size: .85rem; color: var(--muted); margin-top: .35rem; }
+  .despues { font-size: .9rem; color: var(--muted); }
+</style>

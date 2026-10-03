@@ -1,6 +1,6 @@
 ---
-import { render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
+import Resumen from '../../components/Resumen.astro';
 import Navegacion from '../../components/Navegacion.astro';
 import { todos, titulo, fechaLarga } from '../../lib/resumenes';
 
@@ -13,12 +13,8 @@ export async function getStaticPaths() {
 }
 
 const { r, anterior, siguiente } = Astro.props;
-const { Content } = await render(r);
 ---
-<Base title={titulo(r)}>
-  <article>
-    <p class="fecha">{fechaLarga(r.id)}</p>
-    <Content />
-    <Navegacion anterior={anterior} siguiente={siguiente} />
-  </article>
+<Base title={`${fechaLarga(r.id)} · El Congreso, explicado fácil`}>
+  <Resumen r={r} />
+  <Navegacion anterior={anterior} siguiente={siguiente} />
 </Base>

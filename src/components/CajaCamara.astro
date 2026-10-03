@@ -1,0 +1,48 @@
+---
+import Voto from './Voto.astro';
+type Asunto = { titulo: string; explicacion: string; cuando?: string };
+interface Props { nombre: 'Diputados' | 'Senado'; icono: string; clase: 'dip' | 'sen'; data: any }
+const { nombre, icono, clase, data } = Astro.props;
+const secciones: { clave: 'agenda' | 'ideas'; titulo: string; ayuda: string }[] = [
+  { clave: 'agenda', titulo: '📅 En agenda', ayuda: 'Se va a discutir o votar.' },
+  { clave: 'ideas', titulo: '💡 Ideas nuevas', ayuda: 'Solo son propuestas: todavía nadie las vota.' },
+];
+---
+<section class={`camara ${clase}`}>
+  <h2><span aria-hidden="true">{icono}</span> {nombre}</h2>
+  {data.nota && <p class="nota">{data.nota}</p>}
+
+  <h3>✅ Ya se votó</h3>
+  {data.votado.length > 0
+    ? <ul class="lista">{data.votado.map((v: any) => <Voto {...v} />)}</ul>
+    : <p class="nada">Nada.</p>}
+
+  {secciones.map((s) => (
+    <>
+      <h3>{s.titulo} <small>{s.ayuda}</small></h3>
+      {data[s.clave].length > 0
+        ? <ul class="lista">{(data[s.clave] as Asunto[]).map((a) => (
+            <li>
+              <strong>{a.titulo}</strong>{a.cuando && <span class="cuando"> · {a.cuando}</span>}
+              <p>{a.explicacion}</p>
+            </li>
+          ))}</ul>
+        : <p class="nada">Nada hoy.</p>}
+    </>
+  ))}
+</section>
+<style>
+  .camara { margin: 2rem 0; padding: 0 1.1rem 1rem; background: var(--card); border: 1px solid var(--line); border-left: 6px solid var(--marca); border-radius: 10px; }
+  .dip { --marca: var(--dip); }
+  .sen { --marca: var(--sen); }
+  h2 { border: 0; margin: 1.1rem 0 .25rem; padding: 0; color: var(--marca); }
+  h3 { font-size: 1rem; margin: 1.25rem 0 .35rem; }
+  h3 small { font-weight: 400; color: var(--muted); font-size: .85rem; }
+  .nota { margin: .25rem 0 0; color: var(--muted); }
+  .lista { padding: 0; margin: 0; }
+  .lista li { list-style: none; padding: .6rem 0; border-top: 1px solid var(--line); }
+  .lista li:first-child { border-top: 0; }
+  .lista p { margin: .2rem 0; }
+  .cuando { color: var(--muted); font-size: .9rem; }
+  .nada { color: var(--muted); margin: .2rem 0; }
+</style>

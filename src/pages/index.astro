@@ -1,19 +1,17 @@
 ---
-import { render } from 'astro:content';
 import Base from '../layouts/Base.astro';
+import Resumen from '../components/Resumen.astro';
 import Navegacion from '../components/Navegacion.astro';
-import { todos, fechaLarga } from '../lib/resumenes';
+import { todos } from '../lib/resumenes';
 
 const [ultimo, anterior] = await todos();
-const { Content } = ultimo ? await render(ultimo) : { Content: null };
 ---
 <Base title="El Congreso, explicado fácil">
-  {ultimo && Content ? (
-    <article>
-      <p class="fecha">Último resumen · {fechaLarga(ultimo.id)}</p>
-      <Content />
+  {ultimo ? (
+    <>
+      <Resumen r={ultimo} etiqueta="Último resumen" />
       <Navegacion anterior={anterior} />
-    </article>
+    </>
   ) : (
     <p>Todavía no hay resúmenes. El primero aparecerá mañana temprano.</p>
   )}
