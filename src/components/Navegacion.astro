@@ -1,0 +1,13 @@
+---
+import { fechaLarga, type Resumen } from '../lib/resumenes';
+interface Props { anterior?: Resumen; siguiente?: Resumen }
+const { anterior, siguiente } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+<nav class="nav">
+  {anterior ? <a href={`${base}/resumen/${anterior.id}/`}>← {fechaLarga(anterior.id)}</a> : <span />}
+  {siguiente ? <a href={`${base}/resumen/${siguiente.id}/`}>{fechaLarga(siguiente.id)} →</a> : <span />}
+</nav>
+<style>
+  .nav { display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-top: 3rem; font-size: .95rem; }
+</style>

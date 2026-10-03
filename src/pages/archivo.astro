@@ -1,0 +1,24 @@
+---
+import Base from '../layouts/Base.astro';
+import { todos, titulo, fechaLarga } from '../lib/resumenes';
+
+const rs = await todos();
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+<Base title="Todos los resúmenes · El Congreso, explicado fácil">
+  <h1>Todos los resúmenes</h1>
+  {rs.length === 0 && <p>Todavía no hay resúmenes.</p>}
+  <ul class="lista">
+    {rs.map((r) => (
+      <li>
+        <a href={`${base}/resumen/${r.id}/`}>{fechaLarga(r.id)}</a>
+        <span>{titulo(r)}</span>
+      </li>
+    ))}
+  </ul>
+</Base>
+<style>
+  .lista { list-style: none; padding: 0; }
+  .lista li { display: flex; flex-direction: column; padding: .75rem 0; border-bottom: 1px solid var(--line); }
+  .lista span { color: var(--muted); font-size: .9rem; }
+</style>
